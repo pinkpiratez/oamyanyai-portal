@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS portal_links (
 
 -- Seed ข้อมูลเริ่มต้น
 INSERT OR IGNORE INTO site_content (key, value) VALUES
-  ('hero_title', 'Oamyanyai Portal'),
-  ('hero_subtitle', 'ศูนย์กลางบริการดิจิทัลสำหรับธุรกิจของคุณ'),
+  ('hero_title', 'WEBSITE OAMYANYAI'),
+  ('hero_subtitle', 'หน้าเว็บจัดการ'),
   ('hero_description', 'เข้าถึงระบบงานทั้งหมดได้จากจุดเดียว ปลอดภัย รวดเร็ว และพร้อมใช้งาน');
 
 INSERT INTO portal_links (title, description, url, icon, sort_order)

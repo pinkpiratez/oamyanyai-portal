@@ -112,13 +112,14 @@ export function getSessionCookieOptions(maxAgeSeconds = 60 * 60 * 24 * 7) {
   };
 }
 
-export function getAdminPasswordFromEnv(env?: { ADMIN_PASSWORD?: string }) {
-  return env?.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD ?? "";
+export function getAdminPasswordFromEnv(env?: unknown) {
+  const typedEnv = env as { ADMIN_PASSWORD?: string } | undefined;
+  return typedEnv?.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD ?? "";
 }
 
 export async function isAuthenticatedRequest(
   token: string | undefined,
-  env?: { ADMIN_PASSWORD?: string },
+  env?: unknown,
 ) {
   const secret = getAdminPasswordFromEnv(env);
   return verifySessionToken(token, secret);

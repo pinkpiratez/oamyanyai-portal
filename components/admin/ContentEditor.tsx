@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SiteContent } from "@/lib/types";
+import type { SiteContent, ApiResult } from "@/lib/types";
 
 type ContentEditorProps = {
   initialContent: SiteContent;
@@ -23,7 +23,7 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
       body: JSON.stringify(content),
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as ApiResult<SiteContent>;
     setIsSaving(false);
 
     if (!response.ok || !result.success) {
@@ -31,7 +31,7 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
       return;
     }
 
-    setContent(result.data);
+    setContent(result.data ?? content);
     setMessage("บันทึกเนื้อหาหน้าแรกเรียบร้อยแล้ว");
   }
 

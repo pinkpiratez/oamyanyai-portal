@@ -21,7 +21,10 @@ function LoginForm() {
       body: JSON.stringify({ password: password.trim() }),
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as {
+      success?: boolean;
+      error?: string;
+    };
     setIsSubmitting(false);
 
     if (!response.ok || !result.success) {

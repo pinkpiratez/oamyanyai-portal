@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { CreateLinkInput, PortalLink } from "@/lib/types";
+import type { CreateLinkInput, PortalLink, ApiResult } from "@/lib/types";
 import { LinkFormModal } from "@/components/admin/LinkFormModal";
 
 type LinkTableProps = {
@@ -26,8 +26,8 @@ export function LinkTable({ initialLinks }: LinkTableProps) {
 
   async function refreshLinks() {
     const response = await fetch("/api/links?all=1");
-    const result = await response.json();
-    if (result.success) {
+    const result = (await response.json()) as ApiResult<PortalLink[]>;
+    if (result.success && result.data) {
       setLinks(result.data);
     }
   }
@@ -38,7 +38,7 @@ export function LinkTable({ initialLinks }: LinkTableProps) {
     }
 
     const response = await fetch(`/api/links/${id}`, { method: "DELETE" });
-    const result = await response.json();
+    const result = (await response.json()) as ApiResult<PortalLink[]>;
 
     if (!response.ok || !result.success) {
       setMessage(result.error ?? "ลบลิงก์ไม่สำเร็จ");
@@ -56,7 +56,7 @@ export function LinkTable({ initialLinks }: LinkTableProps) {
       body: JSON.stringify(input),
     });
 
-    const result = await response.json();
+    const result = (await response.json()) as ApiResult<PortalLink[]>;
     if (!response.ok || !result.success) {
       throw new Error(result.error ?? "บันทึกลิงก์ไม่สำเร็จ");
     }
