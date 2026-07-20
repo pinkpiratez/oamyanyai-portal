@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -65,6 +66,15 @@ function LoginForm() {
       >
         {isSubmitting ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
       </button>
+
+      <p className="text-center text-sm text-slate-500">
+        <Link
+          href="/admin/reset-password"
+          className="font-medium text-blue-600 transition hover:text-blue-700"
+        >
+          ลืมรหัสผ่าน / รีเซ็ตรหัสผ่าน
+        </Link>
+      </p>
     </form>
   );
 }

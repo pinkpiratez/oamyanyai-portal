@@ -1,9 +1,21 @@
+import {
+  hashPassword,
+  passwordsMatchPlain,
+  verifyPassword,
+} from "@/lib/password";
+import { getDbAsync } from "@/lib/db";
+
 export const SESSION_COOKIE_NAME = "portal_admin_session";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 
 type SessionPayload = {
   exp: number;
   v: 1;
+};
+
+type AdminCredentialRow = {
+  password_hash: string;
+  password_salt: string;
 };
 
 function toBase64Url(bytes: Uint8Array) {
@@ -56,17 +68,14 @@ async function signPayload(encodedPayload: string, secret: string) {
   return toBase64Url(new Uint8Array(signature));
 }
 
-function timingSafeEqualString(a: string, b: string) {
-  if (a.length !== b.length) {
-    return false;
-  }
+export function getAdminPasswordFromEnv(env?: unknown) {
+  const typedEnv = env as { ADMIN_PASSWORD?: string } | undefined;
+  return typedEnv?.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD ?? "";
+}
 
-  let mismatch = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-
-  return mismatch === 0;
+/** Session signing secret — keep stable (Cloudflare secret), not the mutable login password. */
+export function getSessionSecret(env?: unknown) {
+  return getAdminPasswordFromEnv(env);
 }
 
 export async function createSessionToken(secret: string) {
@@ -94,7 +103,7 @@ export async function verifySessionToken(
   }
 
   const expectedSignature = await signPayload(encodedPayload, secret);
-  if (!timingSafeEqualString(signature, expectedSignature)) {
+  if (!passwordsMatchPlain(signature, expectedSignature)) {
     return false;
   }
 
@@ -112,15 +121,75 @@ export function getSessionCookieOptions(maxAgeSeconds = 60 * 60 * 24 * 7) {
   };
 }
 
-export function getAdminPasswordFromEnv(env?: unknown) {
-  const typedEnv = env as { ADMIN_PASSWORD?: string } | undefined;
-  return typedEnv?.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD ?? "";
-}
-
 export async function isAuthenticatedRequest(
   token: string | undefined,
   env?: unknown,
 ) {
-  const secret = getAdminPasswordFromEnv(env);
+  const secret = getSessionSecret(env);
   return verifySessionToken(token, secret);
+}
+
+export async function getStoredAdminCredential() {
+  try {
+    const db = await getDbAsync();
+    return db
+      .prepare(
+        "SELECT password_hash, password_salt FROM admin_credentials WHERE id = 1",
+      )
+      .first<AdminCredentialRow>();
+  } catch {
+    return null;
+  }
+}
+
+export async function setStoredAdminPassword(password: string) {
+  const { hash, salt } = await hashPassword(password);
+  const db = await getDbAsync();
+  await db
+    .prepare(
+      `INSERT INTO admin_credentials (id, password_hash, password_salt, updated_at)
+       VALUES (1, ?, ?, datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+         password_hash = excluded.password_hash,
+         password_salt = excluded.password_salt,
+         updated_at = datetime('now')`,
+    )
+    .bind(hash, salt)
+    .run();
+}
+
+export async function verifyLoginPassword(
+  submittedPassword: string,
+  env?: unknown,
+) {
+  const trimmed = submittedPassword.trim();
+  if (!trimmed) {
+    return false;
+  }
+
+  const stored = await getStoredAdminCredential();
+  if (stored?.password_hash && stored.password_salt) {
+    return verifyPassword(trimmed, stored.password_hash, stored.password_salt);
+  }
+
+  const bootstrapPassword = getAdminPasswordFromEnv(env).trim();
+  return Boolean(bootstrapPassword) && passwordsMatchPlain(trimmed, bootstrapPassword);
+}
+
+/** Accepts current login password or Cloudflare ADMIN_PASSWORD recovery secret. */
+export async function verifyPasswordResetAuthority(
+  currentOrRecoveryPassword: string,
+  env?: unknown,
+) {
+  const trimmed = currentOrRecoveryPassword.trim();
+  if (!trimmed) {
+    return false;
+  }
+
+  const recovery = getAdminPasswordFromEnv(env).trim();
+  if (recovery && passwordsMatchPlain(trimmed, recovery)) {
+    return true;
+  }
+
+  return verifyLoginPassword(trimmed, env);
 }

@@ -13,13 +13,21 @@ const PROTECTED_API_MUTATIONS = [
   { method: "DELETE", prefix: "/api/links/" },
 ];
 
+const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/reset-password"];
+
+function isPublicAdminPath(pathname: string) {
+  return PUBLIC_ADMIN_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
+}
+
 function isProtectedAdminPath(pathname: string) {
   return PROTECTED_ADMIN_PATHS.some((path) => {
     if (pathname === path) {
       return true;
     }
 
-    return pathname.startsWith(`${path}/`) && !pathname.startsWith("/admin/login");
+    return pathname.startsWith(`${path}/`) && !isPublicAdminPath(pathname);
   });
 }
 

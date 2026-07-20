@@ -31,6 +31,12 @@ export function AdminNav() {
           >
             ดูหน้าเว็บ
           </Link>
+          <Link
+            href="/admin/reset-password"
+            className="rounded-full border border-border px-4 py-2 text-sm font-medium text-muted transition hover:text-foreground"
+          >
+            เปลี่ยนรหัสผ่าน
+          </Link>
           <button
             type="button"
             onClick={handleLogout}
