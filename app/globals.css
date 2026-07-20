@@ -2,12 +2,26 @@
 
 :root {
   --background: #030303;
-  --foreground: #ffffff;
+  /* Light-surface text (admin cards); homepage uses explicit text-white */
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-soft: #dbeafe;
+  --border: #e2e8f0;
+  --surface: #ffffff;
+  --shadow: 0 25px 50px -12px rgb(15 23 42 / 0.25);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
 }
@@ -23,7 +37,7 @@ html {
 body {
   min-height: 100vh;
   background: #000;
-  color: var(--foreground);
+  color: #ffffff;
   font-family: var(--font-body), sans-serif;
 }
 

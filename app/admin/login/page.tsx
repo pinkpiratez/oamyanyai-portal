@@ -40,14 +40,18 @@ function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-foreground">
+        <span className="mb-2 block text-sm font-medium text-slate-800">
           รหัสผ่าน
         </span>
         <input
           type="password"
+          name="password"
+          autoComplete="current-password"
+          autoFocus
+          placeholder="กรอกรหัสผ่านผู้ดูแล"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-accent"
+          className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
           required
         />
       </label>
@@ -67,21 +71,23 @@ function LoginForm() {
 
 export default function AdminLoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md rounded-3xl border border-border bg-white p-8 shadow-[var(--shadow)]">
+    <main className="flex min-h-screen items-center justify-center bg-black px-4 py-10">
+      <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 text-slate-900 shadow-[0_25px_50px_-12px_rgb(15_23_42_/_0.45)]">
         <div className="mb-8 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
             Admin Access
           </p>
-          <h1 className="mt-3 font-display text-3xl font-bold text-foreground">
+          <h1 className="mt-3 font-display text-3xl font-bold text-slate-900">
             เข้าสู่ระบบผู้ดูแล
           </h1>
-          <p className="mt-3 text-sm text-muted">
+          <p className="mt-3 text-sm text-slate-500">
             กรอกรหัสผ่านเพื่อจัดการเนื้อหาและลิงก์บนหน้าแรก
           </p>
         </div>
 
-        <Suspense fallback={<p className="text-sm text-muted">กำลังโหลด...</p>}>
+        <Suspense
+          fallback={<p className="text-sm text-slate-500">กำลังโหลด...</p>}
+        >
           <LoginForm />
         </Suspense>
       </div>
