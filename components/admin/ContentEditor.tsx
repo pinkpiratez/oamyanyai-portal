@@ -7,6 +7,11 @@ type ContentEditorProps = {
   initialContent: SiteContent;
 };
 
+const fieldClassName =
+  "w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/15";
+
+const labelClassName = "mb-2 block text-sm font-semibold text-slate-800";
+
 export function ContentEditor({ initialContent }: ContentEditorProps) {
   const [content, setContent] = useState(initialContent);
   const [message, setMessage] = useState("");
@@ -36,21 +41,19 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
   }
 
   return (
-    <section className="rounded-3xl border border-border bg-white p-6 shadow-[var(--shadow)]">
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-[var(--shadow)]">
       <div className="mb-6">
-        <h2 className="font-display text-2xl font-semibold text-foreground">
+        <h2 className="font-display text-2xl font-semibold text-slate-900">
           ข้อความ Hero Section
         </h2>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-slate-500">
           แก้ไขหัวข้อและคำอธิบายบนหน้าแรก ระบบจะอัปเดตทันทีหลังบันทึก
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-foreground">
-            ชื่อหัวข้อหลัก
-          </span>
+          <span className={labelClassName}>ชื่อหัวข้อหลัก</span>
           <input
             value={content.hero_title}
             onChange={(event) =>
@@ -59,15 +62,13 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
                 hero_title: event.target.value,
               }))
             }
-            className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-accent"
+            className={fieldClassName}
             required
           />
         </label>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-foreground">
-            คำบรรยายรอง
-          </span>
+          <span className={labelClassName}>คำบรรยายรอง</span>
           <input
             value={content.hero_subtitle}
             onChange={(event) =>
@@ -76,15 +77,13 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
                 hero_subtitle: event.target.value,
               }))
             }
-            className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-accent"
+            className={fieldClassName}
             required
           />
         </label>
 
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-foreground">
-            คำอธิบายเพิ่มเติม
-          </span>
+          <span className={labelClassName}>คำอธิบายเพิ่มเติม</span>
           <textarea
             value={content.hero_description}
             onChange={(event) =>
@@ -94,7 +93,7 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
               }))
             }
             rows={4}
-            className="w-full rounded-2xl border border-border px-4 py-3 outline-none transition focus:border-accent"
+            className={`${fieldClassName} resize-y`}
             required
           />
         </label>
@@ -103,12 +102,12 @@ export function ContentEditor({ initialContent }: ContentEditorProps) {
           <button
             type="submit"
             disabled={isSaving}
-            className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60"
+            className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
           >
             {isSaving ? "กำลังบันทึก..." : "บันทึกเนื้อหา"}
           </button>
           {message ? (
-            <p className="text-sm font-medium text-accent-strong">{message}</p>
+            <p className="text-sm font-medium text-emerald-700">{message}</p>
           ) : null}
         </div>
       </form>

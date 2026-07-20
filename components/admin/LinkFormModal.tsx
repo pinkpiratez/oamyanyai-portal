@@ -26,6 +26,11 @@ const emptyForm: CreateLinkInput = {
   is_active: true,
 };
 
+const fieldClassName =
+  "w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/15";
+
+const labelClassName = "mb-2 block text-sm font-semibold text-slate-800";
+
 export function LinkFormModal({
   open,
   link,
@@ -75,36 +80,37 @@ export function LinkFormModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-xl rounded-3xl border border-border bg-white p-6 shadow-2xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="font-display text-2xl font-semibold text-foreground">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-2xl sm:p-8">
+        <div className="mb-6 flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
+          <h3 className="font-display text-2xl font-bold text-slate-900">
             {link ? "แก้ไขลิงก์" : "เพิ่มลิงก์ใหม่"}
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full px-3 py-1 text-sm text-muted transition hover:bg-slate-100"
+            className="rounded-full border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
           >
             ปิด
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <label className="block">
-            <span className="mb-2 block text-sm font-medium">ชื่อระบบ</span>
+            <span className={labelClassName}>ชื่อระบบ</span>
             <input
               value={form.title}
               onChange={(event) =>
                 setForm((current) => ({ ...current, title: event.target.value }))
               }
-              className="w-full rounded-2xl border border-border px-4 py-3 outline-none focus:border-accent"
+              placeholder="เช่น ระบบใบเสนอราคา"
+              className={fieldClassName}
               required
             />
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-sm font-medium">คำอธิบาย</span>
+            <span className={labelClassName}>คำอธิบาย</span>
             <textarea
               value={form.description ?? ""}
               onChange={(event) =>
@@ -113,33 +119,35 @@ export function LinkFormModal({
                   description: event.target.value,
                 }))
               }
+              placeholder="สรุปสั้น ๆ ว่าลิงก์นี้ใช้ทำอะไร"
               rows={3}
-              className="w-full rounded-2xl border border-border px-4 py-3 outline-none focus:border-accent"
+              className={`${fieldClassName} resize-y`}
             />
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-sm font-medium">URL</span>
+            <span className={labelClassName}>URL</span>
             <input
               type="url"
               value={form.url}
               onChange={(event) =>
                 setForm((current) => ({ ...current, url: event.target.value }))
               }
-              className="w-full rounded-2xl border border-border px-4 py-3 outline-none focus:border-accent"
+              placeholder="https://example.oamyanyai.com"
+              className={fieldClassName}
               required
             />
           </label>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2">
             <label className="block">
-              <span className="mb-2 block text-sm font-medium">ไอคอน</span>
+              <span className={labelClassName}>ไอคอน</span>
               <select
                 value={form.icon}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, icon: event.target.value }))
                 }
-                className="w-full rounded-2xl border border-border px-4 py-3 outline-none focus:border-accent"
+                className={fieldClassName}
               >
                 {iconOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -150,7 +158,7 @@ export function LinkFormModal({
             </label>
 
             <label className="block">
-              <span className="mb-2 block text-sm font-medium">ลำดับการแสดง</span>
+              <span className={labelClassName}>ลำดับการแสดง</span>
               <input
                 type="number"
                 value={form.sort_order ?? 0}
@@ -160,12 +168,13 @@ export function LinkFormModal({
                     sort_order: Number(event.target.value),
                   }))
                 }
-                className="w-full rounded-2xl border border-border px-4 py-3 outline-none focus:border-accent"
+                placeholder="0"
+                className={fieldClassName}
               />
             </label>
           </div>
 
-          <label className="flex items-center gap-3 text-sm font-medium">
+          <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800">
             <input
               type="checkbox"
               checked={form.is_active ?? true}
@@ -175,25 +184,29 @@ export function LinkFormModal({
                   is_active: event.target.checked,
                 }))
               }
-              className="h-4 w-4 rounded border-border text-accent focus:ring-accent"
+              className="h-5 w-5 rounded border-slate-400 text-blue-600 accent-blue-600 focus:ring-blue-600"
             />
             แสดงบนหน้าแรก
           </label>
 
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? (
+            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              {error}
+            </p>
+          ) : null}
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex justify-end gap-3 border-t border-slate-200 pt-5">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full border border-border px-5 py-3 text-sm font-semibold text-muted"
+              className="rounded-full border-2 border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-white transition hover:bg-accent-strong disabled:opacity-60"
+              className="rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
             >
               {isSaving ? "กำลังบันทึก..." : "บันทึกลิงก์"}
             </button>

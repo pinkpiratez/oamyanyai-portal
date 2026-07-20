@@ -68,13 +68,13 @@ export function LinkTable({ initialLinks }: LinkTableProps) {
   }
 
   return (
-    <section className="rounded-3xl border border-border bg-white p-6 shadow-[var(--shadow)]">
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 text-slate-900 shadow-[var(--shadow)]">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-display text-2xl font-semibold text-foreground">
+          <h2 className="font-display text-2xl font-semibold text-slate-900">
             รายการลิงก์แอปพลิเคชัน
           </h2>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-slate-500">
             จัดการลิงก์ Portal ที่จะแสดงบนหน้าแรก
           </p>
         </div>
@@ -89,52 +89,54 @@ export function LinkTable({ initialLinks }: LinkTableProps) {
       </div>
 
       {message ? (
-        <p className="mb-4 text-sm font-medium text-accent-strong">{message}</p>
+        <p className="mb-4 text-sm font-medium text-emerald-700">{message}</p>
       ) : null}
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-border text-muted">
+      <div className="overflow-x-auto rounded-2xl border border-slate-200">
+        <table className="min-w-full text-left text-sm text-slate-800">
+          <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
             <tr>
-              <th className="px-3 py-3 font-medium">ชื่อ</th>
-              <th className="px-3 py-3 font-medium">URL</th>
-              <th className="px-3 py-3 font-medium">ลำดับ</th>
-              <th className="px-3 py-3 font-medium">สถานะ</th>
-              <th className="px-3 py-3 font-medium">จัดการ</th>
+              <th className="px-4 py-3 font-semibold">ชื่อ</th>
+              <th className="px-4 py-3 font-semibold">URL</th>
+              <th className="px-4 py-3 font-semibold">ลำดับ</th>
+              <th className="px-4 py-3 font-semibold">สถานะ</th>
+              <th className="px-4 py-3 font-semibold">จัดการ</th>
             </tr>
           </thead>
           <tbody>
             {links.map((link) => (
-              <tr key={link.id} className="border-b border-border/70">
-                <td className="px-3 py-4 font-medium text-foreground">
+              <tr key={link.id} className="border-b border-slate-100 last:border-b-0">
+                <td className="px-4 py-4 font-semibold text-slate-900">
                   {link.title}
                 </td>
-                <td className="px-3 py-4 text-muted">{link.url}</td>
-                <td className="px-3 py-4">{link.sort_order}</td>
-                <td className="px-3 py-4">
+                <td className="px-4 py-4 text-slate-600">{link.url}</td>
+                <td className="px-4 py-4 font-medium text-slate-800">
+                  {link.sort_order}
+                </td>
+                <td className="px-4 py-4">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${
                       link.is_active
-                        ? "bg-accent-soft text-accent-strong"
+                        ? "bg-blue-50 text-blue-700"
                         : "bg-slate-100 text-slate-500"
                     }`}
                   >
                     {link.is_active ? "เปิดใช้งาน" : "ปิด"}
                   </span>
                 </td>
-                <td className="px-3 py-4">
-                  <div className="flex gap-2">
+                <td className="px-4 py-4">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => openEditModal(link)}
-                      className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold transition hover:border-accent hover:text-accent"
+                      className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-blue-500 hover:text-blue-600"
                     >
                       แก้ไข
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(link.id)}
-                      className="rounded-full border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50"
+                      className="rounded-full border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50"
                     >
                       ลบ
                     </button>
