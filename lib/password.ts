@@ -33,7 +33,9 @@ function timingSafeEqualString(a: string, b: string) {
 const PBKDF2_ITERATIONS = 100_000;
 
 export async function hashPassword(password: string, salt?: Uint8Array) {
-  const saltBytes = salt ?? crypto.getRandomValues(new Uint8Array(16));
+  const saltBytes = Uint8Array.from(
+    salt ?? crypto.getRandomValues(new Uint8Array(16)),
+  );
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(password),
